@@ -1,30 +1,18 @@
-document.getElementById('generate-btn').addEventListener('click', () => {
-    const numbersContainer = document.getElementById('numbers-container');
-    numbersContainer.innerHTML = '';
+document.addEventListener('DOMContentLoaded', () => {
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
 
-    const lottoNumbers = [];
-    while (lottoNumbers.length < 6) {
-        const randomNumber = Math.floor(Math.random() * 45) + 1;
-        if (!lottoNumbers.includes(randomNumber)) {
-            lottoNumbers.push(randomNumber);
-        }
-    }
-    lottoNumbers.sort((a, b) => a - b);
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
 
-    let bonusNumber;
-    do {
-        bonusNumber = Math.floor(Math.random() * 45) + 1;
-    } while (lottoNumbers.includes(bonusNumber));
-
-    lottoNumbers.forEach(number => {
-        const numberElement = document.createElement('div');
-        numberElement.classList.add('number');
-        numberElement.textContent = number;
-        numbersContainer.appendChild(numberElement);
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
     });
-
-    const bonusElement = document.createElement('div');
-    bonusElement.classList.add('number', 'bonus');
-    bonusElement.textContent = `Bonus: ${bonusNumber}`;
-    numbersContainer.appendChild(bonusElement);
 });
