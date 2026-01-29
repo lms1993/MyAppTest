@@ -2,89 +2,30 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Love, Unlocked: Master the Art of Connection</title>
-    <link rel="stylesheet" href="style.css">
+    <title>운세보는 챗도지</title>
 </head>
 <body>
-    <header>
-        <nav class="container">
-            <div class="logo">Love, Unlocked</div>
-            <ul>
-                <li><a href="#about">About</a></li>
-                <li><a href="#curriculum">Curriculum</a></li>
-                <li><a href="#enroll">Enroll</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <section id="hero">
-            <div class="container">
-                <h1>Unlock the Secrets to Meaningful Relationships</h1>
-                <p>Master the art of connection with our expert-led dating courses.</p>
-                <a href="#enroll" class="cta-button">Start Your Journey</a>
-            </div>
-        </section>
-
-        <section id="about" class="container">
-            <h2>About Your Expert</h2>
-            <p>Dr. Evelyn Reed is a renowned relationship psychologist with over 15 years of experience helping individuals find love and build lasting connections. Her unique approach combines scientific principles with heartfelt, practical advice.</p>
-        </section>
-
-        <section id="curriculum">
-            <div class="container">
-                <h2>Course Curriculum</h2>
-                <div class="course-modules">
-                    <div class="module">
-                        <h3>Module 1: The Art of Conversation</h3>
-                        <p>Learn how to initiate engaging talks and move beyond small talk.</p>
-                    </div>
-                    <div class="module">
-                        <h3>Module 2: Decoding Body Language</h3>
-                        <p>Understand non-verbal cues to build rapport and attraction.</p>
-                    </div>
-                    <div class="module">
-                        <h3>Module 3: Building Lasting Trust</h3>
-                        <p>Discover the keys to creating a foundation of trust and security.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="enroll" class="container">
-            <h2>Ready to Find The One?</h2>
-            <p>Join hundreds of successful students who have transformed their love lives.</p>
-            <a href="#" class="cta-button">Enroll Now for $99</a>
-        </section>
-    </main>
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 Love, Unlocked. All Rights Reserved.</p>
-        </div>
-    </footer>
-
-    <div id="chat-bubble">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-    </div>
-
-    <div id="chat-window" class="hidden">
-        <div id="chat-header">
-            <h2>연애 상담 챗봇</h2>
-            <button id="close-chat">X</button>
-        </div>
-        <div id="chat-log">
-            <div class="message bot-message">
-                <p>안녕하세요! 연애에 대한 고민이 있다면 무엇이든 물어보세요.</p>
-            </div>
-        </div>
-        <div id="chat-input">
-            <input type="text" id="user-input" placeholder="메시지를 입력하세요...">
-            <button id="send-button">전송</button>
-        </div>
-    </div>
-
-    <script src="main.js"></script>
+    <h1></h1>
+    <button onclick="getFortune()">요청하기</button>
+    <script>
+        async function getFortune() {
+            try {
+                const response = await fetch('http://localhost:3000/fortuneTell', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: 'John' }) // replace with your desired data
+                });
+                const data = await response.json();
+                console.log(data);
+                return data;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    </script>
 </body>
 </html>
