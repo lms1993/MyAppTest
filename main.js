@@ -1,8 +1,29 @@
 // 전역 변수
-const chatBox = document.getElementById('chatBox');
 let userMessages = [];
 let assistantMessages = [];
 let userInfo = '';
+
+// 탭 전환
+function showTab(tabId) {
+    // 모든 탭 콘텐츠 숨기기
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(content => {
+        content.classList.remove('active');
+    });
+
+    // 모든 탭 버튼 비활성화
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    // 선택한 탭 활성화
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+
+    // 페이지 최상단으로 스크롤
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 // 로딩 표시
 function showLoader() {
@@ -13,8 +34,8 @@ function hideLoader() {
     document.getElementById('loader').style.display = 'none';
 }
 
-// 시작 버튼 클릭
-function start() {
+// 채팅 시작
+function startChat() {
     const age = document.getElementById('age').value;
     const gender = document.getElementById('gender').value;
     
@@ -29,12 +50,13 @@ function start() {
     
     userInfo = `age:${age},gender:${gender}`;
 
-    document.getElementById("intro").style.display = "none";
-    document.getElementById("chat").style.display = "flex";
+    document.querySelector('.input-form').style.display = 'none';
+    document.getElementById('chatInterface').style.display = 'block';
 }
 
 // 메시지 추가 함수
 function addMessage(content, isUser = false) {
+    const chatBox = document.getElementById('chatBox');
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('chat-message');
     

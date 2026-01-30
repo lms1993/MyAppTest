@@ -10,31 +10,90 @@ body {
     font-size: 14px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-/* 시작 화면 */
-.intro-container {
-    width: 100%;
-    max-width: 500px;
-    padding: 20px;
-}
-
-.intro-content {
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
     background: white;
-    padding: 40px 30px;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    min-height: 100vh;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+}
+
+/* 헤더 */
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
     text-align: center;
-    animation: fadeIn 0.5s ease-in;
+    padding: 40px 20px;
+}
+
+.header h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.header p {
+    font-size: 16px;
+    opacity: 0.9;
+}
+
+/* 탭 네비게이션 */
+.tab-nav {
+    display: flex;
+    background: #f8f9fa;
+    border-bottom: 2px solid #e0e0e0;
+    overflow-x: auto;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 18px 20px;
+    background: transparent;
+    border: none;
+    color: #666;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-btn i {
+    margin-right: 8px;
+}
+
+.tab-btn:hover {
+    background: #fff;
+    color: #667eea;
+}
+
+.tab-btn.active {
+    background: white;
+    color: #667eea;
+    border-bottom: 3px solid #667eea;
+}
+
+/* 콘텐츠 영역 */
+.content {
+    padding: 40px 20px;
+    min-height: 60vh;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease-in;
+}
+
+.tab-content.active {
+    display: block;
 }
 
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(10px);
     }
     to {
         opacity: 1;
@@ -42,30 +101,113 @@ body {
     }
 }
 
-.intro-content h1 {
-    color: #667eea;
+.tab-content h2 {
+    color: #333;
     font-size: 28px;
     margin-bottom: 10px;
+    text-align: center;
 }
 
-.subtitle {
+.intro-text {
+    text-align: center;
     color: #666;
     font-size: 16px;
+    margin-bottom: 40px;
+}
+
+/* 팁 카드 그리드 */
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.tip-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.tip-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+    border-color: #667eea;
+}
+
+.tip-icon {
+    font-size: 40px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.tip-card h3 {
+    color: #667eea;
+    font-size: 20px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.tip-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.tip-card ul li {
+    padding: 10px 0;
+    padding-left: 25px;
+    color: #555;
+    line-height: 1.6;
+    position: relative;
+}
+
+.tip-card ul li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #667eea;
+    font-weight: bold;
+}
+
+/* 채팅 섹션 */
+.chat-section {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.chat-intro {
+    text-align: center;
     margin-bottom: 30px;
 }
 
-.mascot {
-    width: 50%;
-    max-width: 200px;
-    min-width: 150px;
-    margin: 20px auto;
-    border-radius: 50%;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.chat-intro-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.chat-intro h3 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.chat-intro p {
+    color: #666;
+    font-size: 16px;
+}
+
+.input-form {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
 }
 
 .input-group {
     margin-bottom: 20px;
-    text-align: left;
 }
 
 .input-group label {
@@ -104,7 +246,6 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    margin-top: 10px;
 }
 
 .start-btn:hover {
@@ -116,38 +257,19 @@ body {
     margin-right: 8px;
 }
 
-/* 채팅 화면 */
-.chat-container {
-    width: 100%;
-    max-width: 700px;
-    height: 90vh;
-    max-height: 700px;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
+/* 채팅 인터페이스 */
+.chat-interface {
+    background: #f8f9fa;
+    border-radius: 15px;
     overflow: hidden;
-    animation: fadeIn 0.5s ease-in;
-}
-
-.chat-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 20px;
-    text-align: center;
-}
-
-.chat-header h2 {
-    font-size: 20px;
-    font-weight: 600;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
 .chat-box {
-    flex: 1;
+    height: 400px;
     padding: 20px;
     overflow-y: auto;
-    background: #f8f9fa;
+    background: white;
 }
 
 .chat-box::-webkit-scrollbar {
@@ -217,10 +339,9 @@ body {
 }
 
 .assistant-message .message-content {
-    background: white;
+    background: #f0f0f0;
     color: #333;
     border-bottom-left-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .user-message .message-content {
@@ -240,6 +361,7 @@ body {
     padding: 15px;
     color: #667eea;
     font-size: 16px;
+    background: white;
 }
 
 .loader i {
@@ -294,16 +416,41 @@ body {
     font-size: 16px;
 }
 
+/* 푸터 */
+.footer {
+    background: #f8f9fa;
+    text-align: center;
+    padding: 30px 20px;
+    color: #666;
+    border-top: 1px solid #e0e0e0;
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
-    .chat-container {
-        height: 100vh;
-        max-height: 100vh;
-        border-radius: 0;
+    .header h1 {
+        font-size: 24px;
     }
 
-    .intro-content {
-        padding: 30px 20px;
+    .tab-btn {
+        font-size: 13px;
+        padding: 15px 10px;
+    }
+
+    .content {
+        padding: 20px 15px;
+    }
+
+    .tab-content h2 {
+        font-size: 22px;
+    }
+
+    .tips-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .chat-box {
+        height: 300px;
     }
 
     .message-content {
