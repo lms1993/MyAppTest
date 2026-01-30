@@ -1,108 +1,114 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
+// 전역 변수
+const chatBox = document.getElementById('chatBox');
+let userMessages = [];
+let assistantMessages = [];
+let userInfo = '';
 
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
+// 로딩 표시
+function showLoader() {
+    document.getElementById('loader').style.display = 'block';
+}
 
-            if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
+function hideLoader() {
+    document.getElementById('loader').style.display = 'none';
+}
+
+// 시작 버튼 클릭
+function start() {
+    const age = document.getElementById('age').value;
+    const gender = document.getElementById('gender').value;
+    
+    if (age === '') {
+        alert('나이를 입력해주세요.');
+        return;
+    }
+    if (gender === '') {
+        alert('성별을 선택해주세요.');
+        return;
+    }
+    
+    userInfo = `age:${age},gender:${gender}`;
+
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("chat").style.display = "flex";
+}
+
+// 메시지 추가 함수
+function addMessage(content, isUser = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('chat-message');
+    
+    if (isUser) {
+        messageDiv.classList.add('user-message');
+        messageDiv.innerHTML = `
+            <div class="message-avatar"></div>
+            <div class="message-content">
+                <p>${content}</p>
+            </div>
+        `;
+    } else {
+        messageDiv.classList.add('assistant-message');
+        messageDiv.innerHTML = `
+            <div class="message-avatar">🐕</div>
+            <div class="message-content">
+                <p>${content}</p>
+            </div>
+        `;
+    }
+    
+    chatBox.appendChild(messageDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// 메시지 전송
+async function sendMessage() {
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value.trim();
+    
+    if (message === '') {
+        return;
+    }
+
+    // 사용자 메시지 추가
+    addMessage(message, true);
+    userMessages.push(message);
+    messageInput.value = '';
+
+    // 로딩 표시
+    showLoader();
+
+    try {
+        const response = await fetch('http://localhost:3000/fortuneTell', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userInfo: userInfo,
+                userMessages: userMessages,
+                assistantMessages: assistantMessages,
+            })
         });
-    });
 
-    // Chatbot functionality
-    const chatBubble = document.getElementById('chat-bubble');
-    const chatWindow = document.getElementById('chat-window');
-    const closeChat = document.getElementById('close-chat');
-    const sendButton = document.getElementById('send-button');
-    const userInput = document.getElementById('user-input');
-    const chatLog = document.getElementById('chat-log');
-
-    chatBubble.addEventListener('click', () => {
-        chatWindow.classList.toggle('hidden');
-    });
-
-    closeChat.addEventListener('click', () => {
-        chatWindow.classList.add('hidden');
-    });
-
-    sendButton.addEventListener('click', sendMessage);
-    userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            sendMessage();
-        }
-    });
-
-    function sendMessage() {
-        const messageText = userInput.value.trim();
-        if (messageText === '') return;
-
-        appendMessage('user', messageText);
-        userInput.value = '';
-
-        // --- Backend Communication ---
-        // This is where you would send the message to your backend.
-        // We'll use a mock response for now.
-        getBotResponse(messageText);
-    }
-
-    function appendMessage(sender, text) {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message', `${sender}-message`);
+        const data = await response.json();
         
-        const paragraph = document.createElement('p');
-        paragraph.textContent = text;
-        messageElement.appendChild(paragraph);
+        // 로딩 숨기기
+        hideLoader();
         
-        chatLog.appendChild(messageElement);
-        chatLog.scrollTop = chatLog.scrollHeight; // Scroll to the latest message
-    }
-
-    async function getBotResponse(userMessage) {
-        const thinkingElement = document.createElement('div');
-        thinkingElement.classList.add('message', 'bot-message');
-        thinkingElement.innerHTML = '<p><em>상담사가 메시지를 작성 중입니다...</em></p>';
-        chatLog.appendChild(thinkingElement);
-        chatLog.scrollTop = chatLog.scrollHeight;
+        // 어시스턴트 메시지 추가
+        assistantMessages.push(data.assistant);
+        addMessage(data.assistant, false);
         
-        try {
-            // Use relative path for the API endpoint
-            const response = await fetch('/message', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message: userMessage }),
-            });
-
-            // If the server isn't running, this will fail. We'll catch it.
-            if (!response.ok) {
-                // For a 204 No Content response, we can provide a default message
-                // or handle it as a successful but empty response.
-                if (response.status === 204) {
-                    chatLog.removeChild(thinkingElement);
-                    appendMessage('bot', 'No content received from server.');
-                    return; 
-                }
-                throw new Error(`Network response was not ok. Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            const botReply = data.assistant || '죄송해요, 지금은 답변을 드릴 수 없어요. 잠시 후 다시 시도해주세요.';
-            
-            chatLog.removeChild(thinkingElement);
-            appendMessage('bot', botReply);
-
-        } catch (error) {
-            console.error('Fetch Error:', error);
-            chatLog.removeChild(thinkingElement);
-            appendMessage('bot', '오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
-        }
+    } catch (error) {
+        hideLoader();
+        console.error('Error:', error);
+        addMessage('죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.', false);
     }
-});
+}
+
+// Enter 키로 메시지 전송
+function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
+}

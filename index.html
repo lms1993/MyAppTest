@@ -1,200 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Chat UI Screen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연애 고민 상담소 - 챗도지</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-        }
-
-        .chat-container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .chat-box {
-            background-color: #f2f2f2;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            overflow-y: scroll;
-            height: 300px;
-        }
-
-        .chat-message {
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-
-        .chat-message p {
-            margin: 0;
-            padding: 0;
-        }
-
-        .chat-input {
-            display: flex;
-            margin-top: 20px;
-        }
-
-        .chat-input input {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-
-        .chat-input button {
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .chat-input button:hover {
-            background-color: #3e8e41;
-        }
-
-        .assistant {
-            color: blue;
-        }
-
-        .intro-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .intro-container img {
-            width: 50%;
-            min-width: 300px;
-        }
-
-        .intro-container input,
-        .intro-container select {
-            margin-bottom: 15px;
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        #loader {
-            font-size: 25px;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+    <!-- 시작 화면 -->
     <div id="intro" class="intro-container">
-        <h1>운세를 알려드립니다.</h1>
-        <img src="doge.png" alt="chatdoge">
-        <label for="age">나이</label>
-        <input id="age" type="number" min="1" max="120" placeholder="예: 25">
-        <label for="gender">성별</label>
-        <select id="gender" name="gender">
-            <option value="">선택해주세요</option>
-            <option value="male">남성</option>
-            <option value="female">여성</option>
-        </select>
-        <button onclick="start()">오늘의 운세보기</button>
+        <div class="intro-content">
+            <h1>💕 연애 고민 상담소</h1>
+            <p class="subtitle">챗도지가 당신의 연애를 응원합니다</p>
+            <img src="doge.png" alt="챗도지" class="mascot">
+            
+            <div class="input-group">
+                <label for="age">나이</label>
+                <input id="age" type="number" min="1" max="120" placeholder="예: 25">
+            </div>
+            
+            <div class="input-group">
+                <label for="gender">성별</label>
+                <select id="gender" name="gender">
+                    <option value="">선택해주세요</option>
+                    <option value="male">남성</option>
+                    <option value="female">여성</option>
+                </select>
+            </div>
+            
+            <button class="start-btn" onclick="start()">
+                <i class="fas fa-heart"></i> 상담 시작하기
+            </button>
+        </div>
     </div>
+
+    <!-- 채팅 화면 -->
     <div id="chat" class="chat-container" style="display: none;">
-        <div class="chat-box">
-            <div class="chat-message">
-                <p class="assistant">운세에 대해서 물어봐 주세요!</p>
+        <div class="chat-header">
+            <h2>💬 챗도지와의 대화</h2>
+        </div>
+        
+        <div class="chat-box" id="chatBox">
+            <div class="chat-message assistant-message">
+                <div class="message-avatar">🐕</div>
+                <div class="message-content">
+                    <p>안녕하세요! 연애 고민이 있으시면 편하게 말씀해주세요 😊</p>
+                </div>
             </div>
         </div>
+        
         <div id="loader" class="loader" style="display: none;">
             <i class="fa fa-spinner fa-spin"></i>
+            <span>생각 중...</span>
         </div>
+        
         <div class="chat-input">
-            <input type="text" placeholder="Type your message here...">
-            <button id="btn" onclick="spinner()">Send</button>
+            <input type="text" id="messageInput" placeholder="메시지를 입력하세요..." onkeypress="handleKeyPress(event)">
+            <button class="send-btn" onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
         </div>
     </div>
-    <script>
-        const chatBox = document.querySelector('.chat-box');
-        let userMessages = [];
-        let assistantMessages = [];
-        let userInfo = ''
 
-        function spinner() {
-            document.getElementById('loader').style.display = "block";
-        }
-
-        function start() {
-            const age = document.getElementById('age').value;
-            const gender = document.getElementById('gender').value;
-            
-            if (age === '') {
-                alert('나이를 입력해주세요.');
-                return;
-            }
-            if (gender === '') {
-                alert('성별을 선택해주세요.');
-                return;
-            }
-            
-            userInfo = `age:${age},gender:${gender}`;
-
-            document.getElementById("intro").style.display = "none";
-            document.getElementById("chat").style.display = "block";
-        }
-
-        const sendMessage = async () => {
-            const chatInput = document.querySelector('.chat-input input');
-            const chatMessage = document.createElement('div');
-            chatMessage.classList.add('chat-message');
-            chatMessage.innerHTML = `
-    <p>${chatInput.value}</p>
-  `;
-            chatBox.appendChild(chatMessage);
-            
-            //userMessage 메세지 추가
-            userMessages.push(chatInput.value);
-
-            chatInput.value = '';
-
-            const response = await fetch('http://localhost:3000/fortuneTell', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    userInfo: userInfo,
-                    userMessages: userMessages,
-                    assistantMessages: assistantMessages,
-                })
-            });
-
-            const data = await response.json();
-            document.getElementById('loader').style.display = "none";
-            
-            //assistantMessage 메세지 추가
-            assistantMessages.push(data.assistant);
-
-            const astrologerMessage = document.createElement('div');
-            astrologerMessage.classList.add('chat-message');
-            astrologerMessage.innerHTML = `
-    <p class='assistant'>${data.assistant}</p>
-  `;
-            chatBox.appendChild(astrologerMessage);
-        };
-
-        document.querySelector('.chat-input button').addEventListener('click', sendMessage);
-    </script>
+    <script src="main.js"></script>
 </body>
-
 </html>
